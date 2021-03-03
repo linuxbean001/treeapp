@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<head>
+  <title>Node layout</title>
+</head>
+
+<style>
+.node {
+  fill: steelblue;
+  stroke: none;
+}
+
+.link {
+  fill: none;
+  stroke: #ccc;
+  stroke-width: 1px;
+}
+</style>
+
+<body>
+  <svg width="400" height="220">
+    <g transform="translate(5, 5)">
+      <g class="links"></g>
+      <g class="nodes"></g>
+    </g>
+  </svg>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/4.2.2/d3.min.js"></script>
+  <script>
+var data ={
+  "name": "Root",
+  "children": [
+    {
+      "name": "Left 1",
+      "children": [
+        {
+          "name": "Left 1_1"
+        },
+        {
+          "name": "Left 1_2"
+        }
+      ]
+    },
+    {
+      "name": "Left 2",
+      "children": [
+        {
+          "name": "Left 2_1"
+        }
+      ]
+    },
+    {
+      "name": "Left 3"
+    },
+    {
+      "name": "Left 4",
+      "children": [
+        {
+          "name": "Left 4_1"
+        },
+        {
+          "name": "Left 4_2"
+        },
+        {
+          "name": "Left 4_3"
+        }
+      ]
+    },
+    {
+      "name": "Left 5"
+    }
+  ]
+}
+
+var clusterLayout = d3.cluster()
+  .size([400, 200])
+
+var root = d3.hierarchy(data)
+
+clusterLayout(root)
+
+// Nodes
+d3.select('svg g.nodes')
+  .selectAll('circle.node')
+  .data(root.descendants())
+  .enter()
+  .append('circle')
+  .classed('node', true)
+  .attr('cx', function(d) {return d.x;})
+  .attr('cy', function(d) {return d.y;})
+  .attr('r', 4);
+
+// Links
+d3.select('svg g.links')
+  .selectAll('line.link')
+  .data(root.links())
+  .enter()
+  .append('line')
+  .classed('link', true)
+  .attr('x1', function(d) {return d.source.x;})
+  .attr('y1', function(d) {return d.source.y;})
+  .attr('x2', function(d) {return d.target.x;})
+  .attr('y2', function(d) {return d.target.y;});
+
+
+  </script>
+</body>
+</html>
